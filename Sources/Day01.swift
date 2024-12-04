@@ -45,14 +45,14 @@ struct Day01: AdventDay {
     self.locations = try! AllLocationsParser().parse(data)
   }
   
-  func part1() async throws -> Int {
+  func part1() -> Int {
     let leftSorted = locations.left.sorted()
     let rightSorted = locations.right.sorted()
     
     return zip(leftSorted, rightSorted).reduce(0, { $0 + abs($1.0 - $1.1) })
   }
   
-  func part2() async throws -> Int {
+  func part2() -> Int {
     let right: [Int: Int] = locations.right.reduce(into: [:]) {
       $0[$1, default: 0] += 1
     }

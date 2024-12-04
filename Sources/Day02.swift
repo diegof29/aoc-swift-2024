@@ -69,7 +69,7 @@ struct Day02: AdventDay {
     return safeReports.count
   }
   
-  func part2() async throws -> Int {
+  func part2() -> Int {
     let validReports = reports.filter({ $0.levels.count > 1 })
     let unsafeReports = validReports.filter { !isSafe(levels: $0.levels) }
     

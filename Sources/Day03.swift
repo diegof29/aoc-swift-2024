@@ -55,7 +55,7 @@ struct Day03: AdventDay {
       .reduce(0, { $0 + ($1[leftRef] * $1[rightRef]) })
   }
   
-  func part2() async throws -> Int {
+  func part2() -> Int {
     var enabled = true
     return data
       .matches(of: memoryPattern)
