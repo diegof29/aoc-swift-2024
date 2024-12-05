@@ -12,7 +12,7 @@ protocol AdventDay: Sendable {
   static var day: Int { get }
 
   /// An initializer that uses the provided test data.
-  init(data: String)
+  init(data: String) throws
 
   /// Computes and returns the answer for part one.
   func part1() async throws -> Answer
@@ -55,7 +55,12 @@ extension AdventDay {
 
   /// An initializer that loads the test data from the corresponding data file.
   init() {
-    self.init(data: Self.loadData(challengeDay: Self.day))
+    do {
+      try self.init(data: Self.loadData(challengeDay: Self.day))
+    } catch {
+      print(error)
+      self.init()
+    }
   }
 
   static func loadData(challengeDay: Int) -> String {
