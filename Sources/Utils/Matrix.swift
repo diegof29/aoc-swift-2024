@@ -23,6 +23,14 @@ struct Matrix<T: Sendable>: CustomStringConvertible {
       case .downBackward: return .init(row: row + length, column: column - length)
       }
     }
+    
+    func vector(_ to: Coordinate) -> Vec2D {
+      return .init(dx: to.row - row, dy: to.column - column)
+    }
+    
+    func adding(_ vec: Vec2D) -> Coordinate {
+      return .init(row: row + vec.dx, column: column + vec.dy)
+    }
   }
   
   enum Direction: CaseIterable {
@@ -86,7 +94,7 @@ struct Matrix<T: Sendable>: CustomStringConvertible {
   
   func forEach(body: (_ pos: Coordinate, _ value: T) -> Void) {
     for row in 0..<rows {
-      for column in 0...columns {
+      for column in 0..<columns {
         let pos = Coordinate(row: row, column: column)
         body(pos, self[pos])
       }
