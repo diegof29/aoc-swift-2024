@@ -1,5 +1,5 @@
 //
-//  Day04Tests.swift
+//  Day05Tests.swift
 //  AdventOfCode
 //
 //  Created by Diego Pais on 02.12.24.

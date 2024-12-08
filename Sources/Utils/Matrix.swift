@@ -6,7 +6,7 @@
 //
 
 struct Matrix<T: Sendable>: CustomStringConvertible {
-  struct Coordinate: CustomStringConvertible {
+  struct Coordinate: CustomStringConvertible, Equatable, Hashable {
     let row: Int
     let column: Int
     var description: String { "(\(row), \(column))" }
@@ -34,6 +34,19 @@ struct Matrix<T: Sendable>: CustomStringConvertible {
     case upBackward
     case downForward
     case downBackward
+    
+    func rotated90(clockwise: Bool = true) -> Direction {
+      switch self {
+      case .forward: return clockwise ? .down : .up
+      case .backwards: return clockwise ? .up : .down
+      case .up: return clockwise ? .forward : .backwards
+      case .down: return clockwise ? .backwards : .forward
+      case .upForward: return clockwise ? .downForward : .upBackward
+      case .upBackward: return clockwise ? .upForward : .downBackward
+      case .downForward: return clockwise ? .downBackward : .upForward
+      case .downBackward: return clockwise ? .upBackward : .downForward
+      }
+    }
   }
   
   let rows: Int
@@ -70,6 +83,40 @@ struct Matrix<T: Sendable>: CustomStringConvertible {
     guard position.column >= 0 && position.column < columns else { return false }
     return position.row * columns + position.column < data.count
   }
+  
+  func forEach(body: (_ pos: Coordinate, _ value: T) -> Void) {
+    for row in 0..<rows {
+      for column in 0...columns {
+        let pos = Coordinate(row: row, column: column)
+        body(pos, self[pos])
+      }
+    }
+  }
+  
+  func find(_ condition: (Coordinate, T) -> Bool ) -> (Coordinate, T)? {
+    for row in 0..<rows {
+      for column in 0...columns {
+        let pos = Coordinate(row: row, column: column)
+        if condition(pos, self[pos]) {
+          return (pos, self[pos])
+        }
+      }
+    }
+    return nil
+  }
+  
+  func firstNonNil<Result>(_ body: (Coordinate, T) -> Result?) -> Result? {
+    for row in 0..<rows {
+      for column in 0...columns {
+        let pos = Coordinate(row: row, column: column)
+        if let result = body(pos, self[pos]) {
+          return result
+        }
+      }
+    }
+    return nil
+  }
+  
   subscript (safe position: Coordinate) -> T? {
     guard isValid(position: position) else { return nil }
     return data[position.row * columns + position.column]
