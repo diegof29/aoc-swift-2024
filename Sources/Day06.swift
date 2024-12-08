@@ -11,27 +11,24 @@ import Parsing
 @preconcurrency import RegexBuilder
 
 struct Day06: AdventDay {
-  typealias Map = Matrix<Character>
-  typealias Coordinate = Map.Coordinate
-  typealias Direction = Map.Direction
   
   struct Guard: Hashable, CustomStringConvertible {
-    var position: Coordinate
-    var direction: Direction
+    var position: Point
+    var direction: Vector
     
-    init(position: Coordinate, direction: Direction) {
+    init(position: Point, direction: Vector) {
       self.position = position
       self.direction = direction
     }
     
-    init?(character: Character, position: Coordinate) {
+    init?(character: Character, position: Point) {
       self.position = position
       if character == ">" {
         self.direction = .forward
       } else if character == "^" {
         self.direction = .up
       } else if character == "<" {
-        self.direction = .backwards
+        self.direction = .backward
       } else if character == "V" {
         self.direction = .down
       } else {
@@ -39,7 +36,7 @@ struct Day06: AdventDay {
       }
     }
     
-    func nextPosition() -> Coordinate {
+    func nextPosition() -> Point {
       return position.next(direction)
     }
     
@@ -57,7 +54,7 @@ struct Day06: AdventDay {
         case .up: return "^"
         case .down: return "V"
         case .forward: return ">"
-        case .backwards: return "<"
+        case .backward: return "<"
         default: return "-"
         }
       }()
@@ -65,7 +62,7 @@ struct Day06: AdventDay {
     }
   }
   
-  let map: Matrix<Character>
+  let map: Matrix
   
   init(data: String) throws {
     map = Matrix(data: data)
@@ -75,9 +72,9 @@ struct Day06: AdventDay {
     map.firstNonNil({ Guard(character: $1, position: $0) })
   }
   
-  func visitedPositions(theGuard initGuard: Guard) -> [Coordinate] {
+  func visitedPositions(theGuard initGuard: Guard) -> [Point] {
     var theGuard = initGuard
-    var visitedPositions = Set<Coordinate>([theGuard.position])
+    var visitedPositions = Set<Point>([theGuard.position])
     
     repeat {
       let nextPosition = theGuard.nextPosition()
@@ -87,12 +84,13 @@ struct Day06: AdventDay {
         theGuard.walk()
         visitedPositions.insert(theGuard.position)
       }
-    } while map.isInBounds(from: theGuard.position, direction: theGuard.direction, length: 1)
+    } while map.isInBounds(from: theGuard.position, vector: theGuard.direction)
+    
     
     return Array(visitedPositions)
   }
   
-  func isLoop(theGuard input: Guard, obstruction: Coordinate) -> Bool {
+  func isLoop(theGuard input: Guard, obstruction: Point) -> Bool {
     var theGuard = input
     var ghosts = Set<Guard>([theGuard])
     
@@ -107,7 +105,7 @@ struct Day06: AdventDay {
         theGuard.walk()
       }
       ghosts.insert(theGuard)
-    } while map.isInBounds(from: theGuard.position, direction: theGuard.direction, length: 1)
+    } while map.isInBounds(from: theGuard.position, vector: theGuard.direction)
     return false
   }
 

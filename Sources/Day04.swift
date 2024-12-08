@@ -10,18 +10,19 @@ import Parsing
 @preconcurrency import RegexBuilder
 
 struct Day04: AdventDay {
-  typealias Coordinate = Matrix<Character>.Coordinate
-  typealias Direction = Matrix<Character>.Direction
   
-  let matrix: Matrix<Character>
+  let matrix: Matrix
   let word: [Character] = ["X", "M", "A", "S"]
+  var wordDirections: [Vector] {
+    [.up, .down, .forward, .backward, .upForward, .upBackward, .downForward, .downBackward]
+  }
   
   init(data: String) {
     matrix = Matrix(data: data)
   }
   
-  func containsWord(direction: Direction, position: Coordinate) -> Bool {
-    guard matrix.isInBounds(from: position, direction: direction, length: word.count - 1) else {
+  func containsWord(direction: Vector, position: Point) -> Bool {
+    guard matrix.isInBounds(from: position, vector: direction, length: word.count - 1) else {
       return false
     }
     
@@ -37,16 +38,16 @@ struct Day04: AdventDay {
     return true
   }
   
-  func wordOccurrences(position: Coordinate) -> Int {
+  func wordOccurrences(position: Point) -> Int {
     var word = word
     guard matrix[position] == word.removeFirst() else { return 0 }
-    let count = Direction.allCases.reduce(0) {
+    let count = wordDirections.reduce(0) {
       $0 + (containsWord(direction: $1, position: position) ? 1 : 0)
     }
     return count
   }
   
-  func patternOccurrences(position: Coordinate) -> Int {
+  func patternOccurrences(position: Point) -> Int {
     guard matrix[position] == "A" else { return 0 }
     
     let topLeft = position.next(.upBackward)

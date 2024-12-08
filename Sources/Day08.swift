@@ -11,39 +11,33 @@ import Parsing
 @preconcurrency import RegexBuilder
 
 struct Day08: AdventDay {
-  typealias Map = Matrix<Character>
-  typealias Coordinate = Map.Coordinate
-  typealias Direction = Map.Direction
-  
-  let map: Map
-  let allAnthenas: [Character: [Coordinate]]
+  let map: Matrix
+  let allAntennas: [Character: [Point]]
 
   init(data: String) throws {
     map = Matrix(data: data)
-    
-    var anthenas: [Character: [Coordinate]] = [:]
-    map.forEach(body: { pos, value in
-      guard value != "." else { return }
-      var frequencyAnthenas = anthenas[value, default: []]
-      frequencyAnthenas.append(pos)
-      anthenas[value] = frequencyAnthenas
+        
+    self.allAntennas = map.reduce(into: [:], {
+      guard $1.value != "." else { return }
+      var antennas = $0[$1.value, default: []]
+      antennas.append($1.position)
+      $0[$1.value] = antennas
     })
-    self.allAnthenas = anthenas
   }
   
-  func findAntinodes() -> [Coordinate] {
-    var antinodes = Set<Coordinate>()
-    for (_, anthenas) in allAnthenas {
+  func findAntinodes() -> [Point] {
+    var antinodes = Set<Point>()
+    for (_, anthenas) in allAntennas {
       let combinations = anthenas.combinations(ofCount: 2).map({ ($0[0], $0[1]) })
       for (first, second) in combinations {
         let vector = first.vector(second)
         
-        let antinode1 = second.adding(vector)
+        let antinode1 = second + vector
         if map.isValid(position: antinode1) {
           antinodes.insert(antinode1)
         }
         
-        let antinode2 = first.adding(vector.opposite)
+        let antinode2 = first + vector.rotated180
         if map.isValid(position: antinode2) {
           antinodes.insert(antinode2)
         }
@@ -52,23 +46,23 @@ struct Day08: AdventDay {
     return Array(antinodes)
   }
   
-  func findAntinodesNewModel() -> [Coordinate] {
-    var antinodes = Set<Coordinate>()
-    for (_, anthenas) in allAnthenas {
+  func findAntinodesNewModel() -> [Point] {
+    var antinodes = Set<Point>()
+    for (_, anthenas) in allAntennas {
       let combinations = anthenas.combinations(ofCount: 2).map({ ($0[0], $0[1]) })
       for (first, second) in combinations {
         let vector = first.vector(second).normalized
         var position = first
         repeat {
           antinodes.insert(position)
-          position = position.adding(vector)
+          position = position + vector
         } while map.isValid(position: position)
         
-        let vector2 = vector.opposite
-        var position2 = first.adding(vector2)
+        let vector2 = vector.rotated180
+        var position2 = first + vector2
         while map.isValid(position: position2) {
           antinodes.insert(position2)
-          position2 = position2.adding(vector2)
+          position2 = position2 + vector2
         }
       }
     }
