@@ -10,17 +10,18 @@ import Testing
 
 struct Day09Tests {
   let testData = """
+    2333133121414131402
     """
 
   @Test
   func testPart1() async throws {
     let challenge = try Day09(data: testData)
-    #expect(String(describing: challenge.part1()) == "14")
+    #expect(String(describing: challenge.part1()) == "1928")
   }
   
   @Test
   func testPart2() async throws {
     let challenge = try Day09(data: testData)
-    #expect(String(describing: challenge.part2()) == "34")
+    #expect(String(describing: challenge.part2()) == "0")
   }
 }
