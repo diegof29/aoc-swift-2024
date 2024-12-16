@@ -10,6 +10,8 @@ struct Point: CustomStringConvertible, Equatable, Hashable {
   let column: Int
   var description: String { "(\(row), \(column))" }
   
+  static let zero: Point = .init(row: 0, column: 0)
+  
   func next(_ vector: Vector) -> Point {
     return .init(row: row + vector.dr, column: column + vector.dc)
   }

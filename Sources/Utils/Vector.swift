@@ -63,7 +63,7 @@ struct Vector: CustomStringConvertible, Equatable, Hashable {
   }
   
   var description: String {
-    return "\(direction) - (dc: \(dc),dr: \(dr))"
+    return "\(direction) - (dc: \(dc), dr: \(dr))"
   }
   
   static func * (left: Vector, right: Int) -> Vector {
