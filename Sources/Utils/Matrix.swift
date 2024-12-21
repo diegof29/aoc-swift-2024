@@ -8,7 +8,7 @@
 struct Matrix: CustomStringConvertible {
   let rows: Int
   let columns: Int
-  var data: [Character]
+  private(set) var data: [Character]
   
   init(data: String, separator: some RegexComponent = .newlineSequence) {
     let allRows = data.split(separator: separator)
@@ -55,7 +55,7 @@ struct Matrix: CustomStringConvertible {
     var output = ""
     for row in 0..<rows {
       for column in 0..<columns {
-        output += "\(self[.init(row: row, column: column)]) "
+        output += "\(self[.init(row: row, column: column)])"
       }
       output += "\n"
     }

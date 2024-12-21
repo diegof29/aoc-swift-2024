@@ -8,7 +8,7 @@
 struct Point: CustomStringConvertible, Equatable, Hashable {
   let row: Int
   let column: Int
-  var description: String { "(\(row), \(column))" }
+  var description: String { "(\(column), \(row))" }
   
   static let zero: Point = .init(row: 0, column: 0)
   
