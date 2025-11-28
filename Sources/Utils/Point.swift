@@ -23,5 +23,9 @@ struct Point: CustomStringConvertible, Equatable, Hashable {
   static func + (left: Point, right: Vector) -> Point {
     return .init(row: left.row + right.dr, column: left.column + right.dc)
   }
+  
+  static func * (left: Point, right: Int) -> Point {
+    return .init(row: left.row * right, column: left.column * right)
+  }
 }
 
